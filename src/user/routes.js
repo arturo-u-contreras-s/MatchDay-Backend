@@ -4,10 +4,8 @@
 const { Router } = require('express');
 const controller = require('./controller');
 const router = Router(); // Create router object, add routes to it, export the router for use
+const isAuthenticated = require("../../middleware/authenticated.js");
 
-router.get('/', controller.getUsers);
-router.get('/:email', controller.getUserByEmail);
-router.post('/:email', controller.addUserByEmail);
-router.delete('/:id', controller.deleteUserById);
+router.get('/:googleId', isAuthenticated, controller.getUserByGoogleId);
 
 module.exports = router;

@@ -4,10 +4,12 @@
 
 const { Router } = require('express');
 const controller = require('./controller');
-const router = Router(); // Create router object, add routes to it, export the router for use
+const router = Router(); // Create router object
+const isAuthenticated = require("../../middleware/authenticated.js");
 
-router.get('/:id', controller.getFavoriteTeamsByUserId);
-router.post('/', controller.addFavoriteTeam);
-router.delete('/', controller.deleteFavoriteTeam);
+/* Add rotues to the Router object */
+router.get('/:id', isAuthenticated, controller.getFavoriteTeamsByUserId);
+router.post('/', isAuthenticated, controller.addFavoriteTeam);
+router.delete('/', isAuthenticated, controller.deleteFavoriteTeam);
 
-module.exports = router;
+module.exports = router; // Export the router for use

@@ -8,7 +8,7 @@ const router = Router(); // Create router object
 const isAuthenticated = require("../../middleware/authenticated.js");
 
 /* Add rotues to the Router object */
-router.get('/:id', isAuthenticated, controller.getFavoriteTeamsByUserId);
+router.get('/', isAuthenticated, controller.getFavoriteTeams);
 router.post('/', isAuthenticated, controller.addFavoriteTeam);
 router.delete('/', isAuthenticated, controller.deleteFavoriteTeam);
 

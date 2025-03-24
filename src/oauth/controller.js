@@ -15,23 +15,16 @@ const googleAuthCallback = (req, res, next) => {
         return next(loginErr);
       }
 
-      console.log("User logged in:", req.user);
-      console.log("Session ID:", req.sessionID);
-
-      return res.json({ message: "Authentication successful" });
+      return res.redirect("http://localhost:4200/");
     });
   })(req, res, next);
 };
 
 const checkUserLoggedIn = (req, res) => {
-  console.log('req.session: ', req.session);
-  console.log('req.session.passport: ', req.session.passport);
-  console.log('req.session.passport.user: ', req.session.passport.user);
   if (req.session && req.session.passport && req.session.passport.user) {
-    res.status(200).json({ isAuthenticated: true, user: req.session.passport.user });
-  } else {
-    res.status(200).json({ isAuthenticated: false });
+    return res.status(200).json({ isAuthenticated: true, user: req.session.passport.user });
   }
+  return res.status(200).json({ isAuthenticated: false });
 }
 
 const logout = (req, res) => {

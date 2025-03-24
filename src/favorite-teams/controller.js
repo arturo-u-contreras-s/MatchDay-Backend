@@ -5,7 +5,7 @@
 const pool = require('../../db');
 const queries = require('./queries');
 
-const getFavoriteTeamsByUserId = async (req, res) => {
+const getFavoriteTeams = async (req, res) => {
   const user = req.user;
   if (!user || !user.user_id || !user.google_id) {
     const error = new Error('Unauthorized: Please log in');
@@ -87,7 +87,7 @@ const deleteFavoriteTeam = async (req, res) => {
 };
 
 module.exports = {
-  getFavoriteTeamsByUserId,
+  getFavoriteTeams,
   addFavoriteTeam,
   deleteFavoriteTeam,
 };

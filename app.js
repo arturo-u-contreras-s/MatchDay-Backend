@@ -10,14 +10,16 @@ const logger = require("./middleware/logger.js");
 const notFound = require("./middleware/notFound.js");
 const errorHandler = require("./middleware/error.js");
 
-const userRoutes = require("./src/user/routes");
 const favoriteTeamsRoutes = require("./src/favorite-teams/routes");
 const oauthRoutes = require("./src/oauth/routes");
-const googleCalendarRoutes = require("./src/google-calendar/routes");
+const googleApiRoutes = require("./src/google-api/routes.js");
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:4200" }));
+app.use(cors({
+  origin: 'http://localhost:4200',
+  credentials: true,
+}));
 app.use(express.json());
 
 app.use(
@@ -43,10 +45,9 @@ app.use(passport.session());
 
 app.use(logger);
 
-app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/favorite-teams", favoriteTeamsRoutes);
 app.use("/api/v1/oauth", oauthRoutes);
-app.use("/api/v1/google-calendar", googleCalendarRoutes);
+app.use("/api/v1/google-api", googleApiRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

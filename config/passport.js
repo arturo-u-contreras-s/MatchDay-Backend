@@ -12,7 +12,7 @@ require("dotenv").config();
 Determines which user should be stored in the session after authentication.
 - When a user logs in, Passport only saves a small piece of user info (like a user id)
 
-- After login, Passpot takes the user object from the database and stores the user_id in the session
+- After login, Passport takes the user object from the database and stores the user_id in the session
 */
 passport.serializeUser((user, done) => {
   done(null, user.user_id);
@@ -59,11 +59,14 @@ passport.use(
           userResult = insertResult;
         }
 
-        /*
-        Store Google OAuth tokens in req.session so that they can be used later for Google Calendar requests
-        */
         req.session.accessToken = accessToken;
         req.session.refreshToken = refreshToken;
+        req.session.save((err) => {
+          console.log('Session Updated: ', req.session);
+          if (err) {
+            console.error("Error saving session:", err);
+          }
+        });
 
         return done(null, userResult.rows[0]); // Pass the User object to Passport
       } catch (error) {

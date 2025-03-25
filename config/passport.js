@@ -7,6 +7,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const pool = require("../db");
 const queries = require("../src/oauth/queries");
 require("dotenv").config();
+const encrypt = require('../utils/encrypt');
 
 /*
 Determines which user should be stored in the session after authentication.
@@ -53,20 +54,17 @@ passport.use(
     async (req, accessToken, refreshToken, profile, done) => { // triggered after Google authenticates the user
       try {
         const googleId = profile.id;
-        let userResult = await pool.query(queries.getUserByGoogleId, [googleId]); // check if the user exists
-        if (userResult.rows.length === 0) { // insert a new user if they do not exists
-          const insertResult = await pool.query(queries.addUserByGoogleId, [googleId]);
-          userResult = insertResult;
-        }
+        let userResult = await pool.query(queries.getUserByGoogleId, [googleId]); // Check if the user exists
 
-        req.session.accessToken = accessToken;
-        req.session.refreshToken = refreshToken;
-        req.session.save((err) => {
-          console.log('Session Updated: ', req.session);
-          if (err) {
-            console.error("Error saving session:", err);
-          }
-        });
+        accessToken = encrypt.encryptToken(accessToken);
+
+        if (userResult.rows.length === 0) { // Insert a new user if they do not exist
+          const insertResult = await pool.query(queries.addUser, [googleId, accessToken]);
+          userResult = insertResult;
+        } else { // Update tokens if user already exists
+          const updateResult = await pool.query(queries.updateUserTokens, [accessToken, googleId]);
+          userResult = updateResult;
+        }
 
         return done(null, userResult.rows[0]); // Pass the User object to Passport
       } catch (error) {

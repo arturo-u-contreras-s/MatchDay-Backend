@@ -2,6 +2,7 @@
   Controller for managing the users Google Calendar.
 */
 const { google } = require("googleapis");
+const encrypt = require('../../utils/encrypt');
 
 /*
 eventDetails: {
@@ -12,7 +13,7 @@ eventDetails: {
 }
 */
 const addEventToGoogleCalendar = async (req, res) => {
-  const accessToken = req.session.accessToken; // Get token from session
+  const accessToken = encrypt.decryptToken(req.user.access_token);
   if (!accessToken) {
     return res.status(403).json({ message: "No Google access token found" });
   }
@@ -47,7 +48,7 @@ const addEventToGoogleCalendar = async (req, res) => {
       resource: event,
     });
 
-    res.status(200).json({ message: "Event added to calendar", fixture: response.data });
+    res.status(200).json({ message: "Event added to calendar", fixture: response.data.summary });
   } catch (error) {
     console.error("Google Calendar API Error:", error);
     res.status(500).json({ message: "Failed to create event", error: error.message });

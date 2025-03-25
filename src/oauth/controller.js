@@ -3,7 +3,12 @@
 */
 const passport = require("../../config/passport");
 
-const googleAuthRedirect = passport.authenticate("google", { scope: ["profile", "email"] });
+const googleAuthRedirect = passport.authenticate("google", { scope: [
+  "profile",
+  "email",
+  "https://www.googleapis.com/auth/calendar.events",
+  "https://www.googleapis.com/auth/calendar"]
+});
 
 const googleAuthCallback = (req, res, next) => {
   passport.authenticate("google", (err, user, info) => {

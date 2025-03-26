@@ -4,6 +4,7 @@ const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
 const pool = require("./db");
 const passport = require("./config/passport");
+const rateLimiter = require('express-rate-limit');
 require("dotenv").config();
 
 const logger = require("./middleware/logger.js");
@@ -20,6 +21,15 @@ app.use(cors({
   origin: 'http://localhost:4200',
   credentials: true,
 }));
+
+let limiter = rateLimiter({
+  max: 200,
+  windowMS: 60 * 60 * 1000,
+  message: 'You have exceeded your request rate limit. Please try again in an hour.'
+});
+
+app.use('/api', limiter);
+
 app.use(express.json());
 
 app.use(

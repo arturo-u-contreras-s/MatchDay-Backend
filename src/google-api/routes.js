@@ -7,5 +7,7 @@ const router = Router();
 const isAuthenticated = require("../../middleware/authenticated.js");
 
 router.post("/calendar", isAuthenticated, controller.addEventToGoogleCalendar);
+router.get("/profile", isAuthenticated, controller.getGoogleProfile);
+router.post("/check-fixtures", isAuthenticated, controller.checkEventsInGoogleCalendar);
 
 module.exports = router;

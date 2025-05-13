@@ -10,10 +10,12 @@ require("dotenv").config();
 const logger = require("./middleware/logger.js");
 const notFound = require("./middleware/notFound.js");
 const errorHandler = require("./middleware/error.js");
+const rateLimiter = require("./middleware/rateLimiter.js");
 
 const favoriteTeamsRoutes = require("./src/favorite-teams/routes");
 const oauthRoutes = require("./src/oauth/routes");
 const googleApiRoutes = require("./src/google-api/routes.js");
+const footballApiRoutes = require("./src/football-api/routes.js");
 
 const app = express();
 
@@ -54,10 +56,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(logger);
+app.use(rateLimiter);
 
 app.use("/api/v1/favorite-teams", favoriteTeamsRoutes);
 app.use("/api/v1/oauth", oauthRoutes);
 app.use("/api/v1/google-api", googleApiRoutes);
+app.use("/api/v1/football-api", footballApiRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
